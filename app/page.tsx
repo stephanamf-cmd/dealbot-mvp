@@ -18,7 +18,7 @@ export default function Home() {
   async function send() {
     if (!input.trim() || loading) return;
 
-    const next = [...messages, { role: "user", content: input.trim() }];
+ const next: Msg[] = [...messages, { role: "user" as const, content: input.trim() }];
     setMessages(next);
     setInput("");
     setLoading(true);

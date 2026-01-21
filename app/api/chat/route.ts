@@ -51,17 +51,42 @@ Never provide valuation, ranges, recommendations, or commentary.
     });
 
     const msg = completion.choices[0]?.message;
-    const toolCall = msg?.tool_calls?.[0];
+const toolCall = msg?.tool_calls?.[0];
 
-    // If no tool-call, assistant asked a question
-    if (!toolCall) {
-      return NextResponse.json({
-        type: "question",
-        text: msg?.content || "Please provide purchase price, annual NOI, and market type."
-      });
-    }
+// If no tool-call, assistant asked a question
+if (!toolCall) {
+  return NextResponse.json({
+    type: "question",
+    text: msg?.content || "Please provide purchase price, annual NOI, and market type."
+  });
+}
 
-    const args = JSON.parse(toolCall.function.arguments);
+// ✅ Narrow: ensure this is a "function" tool call
+if (toolCall.type !== "function") {
+  return NextResponse.json(
+    { type: "error", text: `Unexpected tool call type: ${toolCall.type}` },
+    { status: 500 }
+  );
+}
+
+const rawArgs = toolCall.function.arguments;
+if (!rawArgs) {
+  return NextResponse.json(
+    { type: "error", text: "Tool call arguments were empty." },
+    { status: 500 }
+  );
+}
+
+let args: any;
+try {
+  args = JSON.parse(rawArgs);
+} catch {
+  return NextResponse.json(
+    { type: "error", text: `Tool call arguments not valid JSON: ${rawArgs}` },
+    { status: 500 }
+  );
+}
+
 	
 	console.log("REQUEST BODY:", body);
 	console.log("MESSAGES TYPE:", Array.isArray(body?.messages), typeof body?.messages);
