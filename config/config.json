@@ -1,0 +1,15 @@
+{
+  "capRates": {
+    "primary": 0.055,
+    "secondary": 0.065,
+    "tertiary": 0.075
+  },
+  "pricingThresholds": {
+    "underpricedPct": -0.05,
+    "overpricedPct": 0.05
+  },
+  "offerRules": {
+    "offerDiscountPct": 0.02,
+    "maxOverpricedForOfferPct": 0.12
+  }
+}
